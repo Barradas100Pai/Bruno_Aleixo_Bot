@@ -35,7 +35,7 @@ sp = spotipy.Spotify(
     client_credentials_manager=client_credentials_manager
 )
 
-#SUBREDIT ONDE FAZER O POST
+#SUBREDDIT ONDE FAZER O POST
 subreddit = reddit.subreddit('BrunoAleixo')
 
 #VARIAVEL DE HORA DE VERIFICAÇÃO ANTERIOR
