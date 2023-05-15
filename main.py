@@ -4,7 +4,8 @@ from psaw import PushshiftAPI
 from replit import db
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-from datetime import datetime
+#from datetime import datetime
+import time
 
 #IMPORT REDDIT VALS
 client_id = os.environ['client_id']
@@ -35,11 +36,8 @@ sp = spotipy.Spotify(
     client_credentials_manager=client_credentials_manager
 )
 
-#SUBREDDIT ONDE FAZER O POST
+#SUBREDIT ONDE FAZER O POST
 subreddit = reddit.subreddit('BrunoAleixo')
-
-#VARIAVEL DE HORA DE VERIFICAÇÃO ANTERIOR
-last_ver = datetime.now().minute
 
 #PODCAST ID's
 aleixofm_id = '0bUbdKMxCffxh43lwbAkoi' 
@@ -53,20 +51,21 @@ aleixoamigo = sp.show_episodes(aleixoamigo_id, limit = 1, offset = 0, market = '
 
 #FUNÇÃO QUE REALIZA O POST
 def makeRedditPost(podName, dict):
-    episode_id = dict['items'][0]['id']
-    episode_name = sp.episode(episode_id, market='PT')['name']
+		episode_id = dict['items'][0]['id']
+		episode_name = sp.episode(episode_id, market='PT')['name']
 	
-    title = "Novo episódio de " + podName + " - " + episode_name
-	
-    body = "Descrição do episódio: " + dict['items'][0]['description'] + "\n" + "Podem agora ouvir este excelente episódio em: " + dict['items'][0]['external_urls']['spotify'] + "\n" + "Este post foi realizado de forma automática."
-	
-    subreddit.submit(title, selftext=body)
+		title = "Novo episódio de " + podName + " - " + episode_name
+		
+		body = dict['items'][0]['description'] + "\n\n" +"Podem agora ouvir este excelente episódio em: " + dict['items'][0]['external_urls']['spotify']
+		#image_url = dict['items'][0]['images'][0]['url']
+		subreddit.submit(title, selftext=body)
+
+#TESTE
+#makeRedditPost("Aleixo Amigo", aleixoamigo)
 
 while True:
-	now = datetime.now().minute
-	if last_ver != now:
-		last_ver = now
-		#GET PODCAST ALEIXOPEDIA
+	time.sleep(60)
+	#GET PODCAST ALEIXOPEDIA
 	now_aleixopedia = sp.show_episodes(aleixopedia_id, limit = 1, offset = 0, market = 'PT')
 	if now_aleixopedia != aleixopedia:
 		aleixopedia = now_aleixopedia
@@ -81,5 +80,4 @@ while True:
 	if now_aleixoamigo != aleixoamigo:
 		aleixoamigo = now_aleixoamigo
 		makeRedditPost("Aleixo Amigo", aleixoamigo)
-
 	
